@@ -1,0 +1,17 @@
+<Image
+        src={data.post.image}
+        alt={data.post.title}
+        width={1000}
+        height={1000}
+      />
+      <div className="flex items-center gap-x-2.5 text-white mt-5">
+        <Image
+          src={data.post.creator?.image}
+          width={37}
+          height={37}
+          className="rounded-full"
+          alt="profile"
+        />
+        <p>{data.post.creator?.username}</p>
+      </div>
+      

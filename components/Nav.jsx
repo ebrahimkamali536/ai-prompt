@@ -1,46 +1,48 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Nav = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const response = await getProviders();
       setProviders(response);
     };
-    setProviders();
+    setUpProviders();
   }, []);
+  
   return (
-    <nav className="flex-between w-full mb-16 pt-3">
+    <nav className="flex-between w-full mb-8 pt-3 lg:max-w-screen-xl">
       <Link href="/" className="flex gap-2 flex-center">
         <Image
           src="/assets/images/logo.svg"
-          alt="Promptopia logo"
+          alt="logo"
           width={30}
           height={30}
           className="object-contain"
         />
-        <p className="logo_text">Promptopia</p>
+        <p className="logo_text text-white">فیلمینو</p>
       </Link>
       {/* Desktop navigation */}
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
-            <Link href="/create-prompt" className="black_btn">
-              Create Post
+            <Link href="/create-post" className="red_btn">
+              ثبت نظر جدید
             </Link>
             <button type="button" onClick={signOut} className="outline_btn">
-              Sign Out
+              خروج از حساب
             </button>
             <Link href="/profile">
               <Image
-                src="/assets/images/profile.svg"
+                src={session?.user?.image}
                 width={37}
                 height={37}
                 className="rounded-full"
@@ -56,9 +58,9 @@ const Nav = () => {
                   type="button"
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
-                  className="black_btn"
+                  className="red_btn"
                 >
-                  Sign In
+                  ورود به حساب
                 </button>
               ))}
           </>
@@ -67,10 +69,10 @@ const Nav = () => {
 
       {/* mobile navigation */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex">
             <Image
-              src="/assets/images/logo.svg"
+              src={session?.user.image}
               width={37}
               height={37}
               className="rounded-full"
@@ -84,20 +86,24 @@ const Nav = () => {
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
-                  My Profile
+                  پروفایل
                 </Link>
                 <Link
-                  href="/create-prompt"
+                  href="/create-post"
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
-                  Create prompt
+                  ثبت نظر جدید
                 </Link>
-                <button type="button" onClick={() => {
-                    setToggleDropdown(false)
-                    signOut()
-                }} className="mt-5 w-full black_btn">
-                    Sign Out
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToggleDropdown(false);
+                    signOut();
+                  }}
+                  className="mt-5 w-full red_btn"
+                >
+                  خروج از حساب
                 </button>
               </div>
             )}
@@ -110,9 +116,9 @@ const Nav = () => {
                   type="button"
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
-                  className="black_btn"
+                  className="red_btn"
                 >
-                  Sign In
+                  ورود
                 </button>
               ))}
           </>
